@@ -1,87 +1,42 @@
 package com.algaworks.algatransito.domain.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@Getter
+@Setter
 @Entity
+@Table(name = "autuacao")
 public class Autuacao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne //muitas autuações associa a um veiculo
+
+    /*
+    Muitas autuações associada a um veículo
+    */
+    @ManyToOne
+    @JoinColumn(name = "autuacao_id")
     private Veiculo veiculo;
+
+    @Column(name = "descricao", length = 255)
     private String descricao;
+
+    @Column(name = "valor_multa", precision = 8, scale = 2)
     private BigDecimal valorMulta;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "data_ocorrencia")
     private LocalDateTime dataOcorrencia;
 
     public Autuacao(Long id, String descricao, BigDecimal valorMulta, LocalDateTime dataOcorrencia) {
-    }
-
-    public Autuacao(Long id, Veiculo veiculo, String descricao, BigDecimal valorMulta, LocalDateTime dataOcorrencia) {
-        this.id = id;
-        this.veiculo = veiculo;
-        this.descricao = descricao;
-        this.valorMulta = valorMulta;
-        this.dataOcorrencia = dataOcorrencia;
-    }
-
-    public Autuacao() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Veiculo getVeiculo() {
-        return veiculo;
-    }
-
-    public void setVeiculo(Veiculo veiculo) {
-        this.veiculo = veiculo;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public BigDecimal getValorMulta() {
-        return valorMulta;
-    }
-
-    public void setValorMulta(BigDecimal valorMulta) {
-        this.valorMulta = valorMulta;
-    }
-
-    public LocalDateTime getDataOcorrencia() {
-        return dataOcorrencia;
-    }
-
-    public void setDataOcorrencia(LocalDateTime dataOcorrencia) {
-        this.dataOcorrencia = dataOcorrencia;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Autuacao autuacao = (Autuacao) o;
-        return Objects.equals(id, autuacao.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }
