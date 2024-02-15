@@ -1,11 +1,11 @@
-package com.algaworks.algatransito.api.controller.exceptionhandler;
+package com.algaworks.algatransito.controller.exceptionhandler;
 
 import com.algaworks.algatransito.domain.exception.NegocioException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice // componente spring responsavel capturar exceções globais
+@RestControllerAdvice
 public class ApiExceptionHandler {
 
     @ExceptionHandler(NegocioException.class)

@@ -1,5 +1,6 @@
 package com.algaworks.algatransito.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -9,6 +10,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
+import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -21,17 +24,16 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-@Table(name = "proprietario")
-public class Veiculo {
+@Table(name = "veiculo")
+public class Veiculo  implements Serializable {
 
-    //validando em cascata id proprietario vai ser validado
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne  //muitos para um
-    @JoinColumn(name = "proprietario_id") //nome da coluna que faz esse relacionamento
-    @NotNull // not null porque é uma entidade
+    @ManyToOne
+    @JsonBackReference
+    @JoinColumn(name = "proprietario_id")
     private Proprietario proprietario;
 
     @NotBlank
@@ -42,44 +44,25 @@ public class Veiculo {
     @Column(name = "modelo", length = 30, nullable = false)
     private String modelo;
 
-    /*
-    @Pattern
-    Validar o formato da placa como xxx0000 ou xxx0x00 @Pattern
-    Expressao Regular para validar texto regexp
-    @Pattern(regexp = "[A-z]{3}[0-9]{4}")
-    */
     @NotBlank
     @Pattern(regexp = "[A-Z]{3}[0-9][A-Z0-9][0-9]{2}")
     @Column(name = "placa", length = 7, nullable = false)
     private String placa;
 
-    // anotação jakson
-    //(access = JsonProperty.Access.READ_ONLY) propiedadde apenas leitura na hora do registro
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Enumerated(EnumType.STRING) // especifica tipo de dado que vai armazenar mysql
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 10)
     private StatusVeiculo status;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private OffsetDateTime dataCadastro;
+    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Temporal(TemporalType.DATE)
+    @Column(name = "data_cadastro", nullable = false)
+    private LocalDate dataCadastro;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private OffsetDateTime dataApreensao;
+    //@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "data_apreensao")
+    private LocalDateTime dataApreensao;
 
-    //OffsetDateTime demonstra horario local em relação ao tcu
-    // (mappedBy = "veiculo' ): propiedade da classe Autuaçao que  liga
-    // (cascade =CascadeType.ALL) toda auteração aqui sera realizada tambem no banco de dados
-    // cascade = CascadeType.ALL
-    //@JsonIgnore
     @OneToMany(mappedBy = "veiculo", fetch = FetchType.LAZY)
     private List<Autuacao> autuacoes;
-
-    //metodo adicionar autuaçao para clase Service Autuaçao
-    public Autuacao adicionarAutuacao(Autuacao autuacao) {
-        autuacao.setDataOcorrencia(LocalDateTime.now());
-        autuacao.setVeiculo(this); //proprio veiculo da instancia corrente
-        getAutuacoes().add(autuacao);
-        return autuacao;
-    }
-
 }

@@ -3,6 +3,7 @@ package com.algaworks.algatransito.domain.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(name = "autuacao")
-public class Autuacao {
+public class Autuacao implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +25,7 @@ public class Autuacao {
     Muitas autuações associada a um veículo
     */
     @ManyToOne
-    @JoinColumn(name = "autuacao_id")
+    @JoinColumn(name = "veiculo_id")
     private Veiculo veiculo;
 
     @Column(name = "descricao", length = 255)

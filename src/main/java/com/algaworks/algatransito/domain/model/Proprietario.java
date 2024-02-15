@@ -1,9 +1,12 @@
 package com.algaworks.algatransito.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,14 +16,15 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
+@Builder
 @Table(name = "proprietario")
-public class Proprietario {
+public class Proprietario  implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank //validação validation
+    @NotBlank
     @Size(max = 60)
     @Column(name = "nome", length = 60, nullable = false)
     private String nome;
@@ -28,13 +32,13 @@ public class Proprietario {
     @NotBlank
     @Size(max = 60)
     @Email
-    @Column(name = "nome", length = 60, nullable = false)
+    @Column(name = "email", length = 60, nullable = false)
     private String email;
 
-    @Column(name = "telefone") // caso o nome da coluna esteja diferente no banco
+    @Column(name = "telefone")
     private String telefone;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "proprietario", fetch = FetchType.LAZY)
     private List<Veiculo> veiculos;
-
 }
