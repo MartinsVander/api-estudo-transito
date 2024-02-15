@@ -25,7 +25,7 @@ public class ProprietarioService {
 
     public Proprietario savarProprietario(Proprietario proprietario) {
 
-        if (emailEmUso(proprietario))
+        if (isEmailEmUso(proprietario))
             throw new NegocioException("Email já em uso em outro proprietário");
 
         return proprietarioRepository.save(proprietario);
@@ -36,18 +36,15 @@ public class ProprietarioService {
         if (proprietarioID == null)
             throw new NegocioException("Para atualizar o prorpietário, é obrigatório informar o ID do mesmo.");
 
-        Proprietario entity = proprietarioRepository.findById(proprietarioID)
-                .orElseThrow(() -> new NegocioException(
-                        String.format("Não foi possível atualizar o proprietário. ID: %s não encontrado.",
-                                String.valueOf(proprietarioID))));
-
-        if (emailEmUso(proprietario))
+        if (isEmailEmUso(proprietario))
             throw new NegocioException("Email em uso em outro proprietário.");
+
+        Proprietario entity = buscarProprietarioPorId(proprietarioID);
 
         entity.setNome(proprietario.getNome());
         entity.setTelefone(proprietario.getTelefone());
         entity.setEmail(proprietario.getEmail());
-        entity.getVeiculos().addAll(proprietario.getVeiculos());
+        entity.setVeiculos(proprietario.getVeiculos());
         return proprietarioRepository.save(entity);
     }
 
@@ -55,7 +52,7 @@ public class ProprietarioService {
         proprietarioRepository.deleteById(proprietarioId);
     }
 
-    private boolean emailEmUso(Proprietario proprietario) {
+    private boolean isEmailEmUso(Proprietario proprietario) {
         return proprietarioRepository.findByEmail(proprietario.getEmail())
                 .filter(p -> !p.equals(proprietario))
                 .isPresent();

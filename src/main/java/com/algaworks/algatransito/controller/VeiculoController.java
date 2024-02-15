@@ -37,7 +37,7 @@ public class VeiculoController {
         return new ResponseEntity<>(veiculoService.alterarVeiculo(veiculo, veiculoId), HttpStatus.OK);
     }
 
-    @PutMapping("/{veiculoId}/{proprietarioId}")
+    @PutMapping("/{veiculoId}/proprietario/{proprietarioId}")
     public ResponseEntity<Veiculo> alterarProprietario(@PathVariable Long veiculoId, @PathVariable Long proprietarioId) {
         return new ResponseEntity<>(veiculoService.alterarProprietario(veiculoId, proprietarioId), HttpStatus.OK);
     }
