@@ -1,5 +1,6 @@
 package com.algaworks.algatransito.controller;
 
+import com.algaworks.algatransito.domain.model.Dto.VeiculoDTO;
 import com.algaworks.algatransito.domain.model.Veiculo;
 import com.algaworks.algatransito.domain.service.VeiculoService;
 import jakarta.validation.Valid;
@@ -18,16 +19,16 @@ public class VeiculoController {
     private VeiculoService veiculoService;
 
     @GetMapping
-    public ResponseEntity<List<Veiculo>> buscarTodosVeiculos() {
+    public ResponseEntity<List<VeiculoDTO>> buscarTodosVeiculos() {
         return new ResponseEntity<>(veiculoService.buscarTodosVeiculos(), HttpStatus.OK);
     }
 
     @GetMapping("/{veiculoId}")
-    public ResponseEntity<Veiculo> buscarVeiculoPorId(@PathVariable Long veiculoId) {
+    public ResponseEntity<VeiculoDTO> buscarVeiculoPorId(@PathVariable Long veiculoId) {
         return new ResponseEntity<>(veiculoService.buscarVeiculoPorId(veiculoId), HttpStatus.OK);
     }
 
-    @PostMapping("/{priprietarioId}")
+    @PostMapping("/proprietario/{priprietarioId}")
     public ResponseEntity<Veiculo> cadastrarVeiculo(@Valid @RequestBody Veiculo veiculo, @PathVariable Long priprietarioId) {
         return new ResponseEntity<>(veiculoService.cadastrarVeiculo(veiculo, priprietarioId), HttpStatus.CREATED);
     }

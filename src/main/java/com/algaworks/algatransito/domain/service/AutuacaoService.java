@@ -2,6 +2,7 @@ package com.algaworks.algatransito.domain.service;
 
 import com.algaworks.algatransito.domain.exception.NegocioException;
 import com.algaworks.algatransito.domain.model.Autuacao;
+import com.algaworks.algatransito.domain.model.Dto.VeiculoDTO;
 import com.algaworks.algatransito.domain.model.Veiculo;
 import com.algaworks.algatransito.domain.repository.AutuacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,12 @@ public class AutuacaoService {
     }
 
     public List<Autuacao> buscarAutuacoesPorVeiculo(Long veiculoID) {
-        Veiculo veiculo = veiculoService.buscarVeiculoPorId(veiculoID);
+        VeiculoDTO veiculo = veiculoService.buscarVeiculoPorId(veiculoID);
         return autuacaoRepository.findByVeiculo(veiculo);
     }
 
     public Autuacao registrarAutuacao(Long veiculoID, Autuacao novaAutuacao) {
-        Veiculo veiculo = veiculoService.buscarVeiculoPorId(veiculoID);
+        VeiculoDTO veiculo = veiculoService.buscarVeiculoPorId(veiculoID);
         novaAutuacao.setDataOcorrencia(LocalDateTime.now());
         novaAutuacao.setVeiculo(veiculo);
         return autuacaoRepository.save(novaAutuacao);

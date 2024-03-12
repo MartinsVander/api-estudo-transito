@@ -1,6 +1,7 @@
 package com.algaworks.algatransito.domain.service;
 
 import com.algaworks.algatransito.domain.exception.NegocioException;
+import com.algaworks.algatransito.domain.model.Dto.VeiculoDTO;
 import com.algaworks.algatransito.domain.model.Proprietario;
 import com.algaworks.algatransito.domain.model.StatusVeiculo;
 import com.algaworks.algatransito.domain.model.Veiculo;
@@ -10,8 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class VeiculoService {
@@ -22,12 +26,28 @@ public class VeiculoService {
     @Autowired
     private ProprietarioService proprietarioService;
 
-    public List<Veiculo> buscarTodosVeiculos() {
-        return veiculoRepository.findAll();
+    public List<VeiculoDTO> buscarTodosVeiculos() {
+        return veiculoRepository.findAll().stream().map(v -> {
+            return VeiculoDTO.builder()
+                  .marca(v.getMarca())
+                  .modelo(v.getModelo())
+                  .status(v.getStatus())
+                  .proprietario(v.getProprietario())
+                  .autuacoes(v.getAutuacoes())
+                  .build();
+        }).collect(Collectors.toList());
     }
 
-    public Veiculo buscarVeiculoPorId(Long veiculoID) {
-        return veiculoRepository.findById(veiculoID).orElseThrow(() -> new NegocioException("Veículo não encontrado!"));
+    public VeiculoDTO buscarVeiculoPorId(Long veiculoID) {
+        return veiculoRepository.findById(veiculoID).map(v -> {
+            return VeiculoDTO.builder()
+                    .marca(v.getMarca())
+                    .modelo(v.getModelo())
+                    .status(v.getStatus())
+                    .proprietario(v.getProprietario())
+                    .autuacoes(v.getAutuacoes())
+                    .build();
+        }).orElseThrow(() -> new NegocioException("Veículo não encontrado!"));
     }
 
     public Veiculo cadastrarVeiculo(Veiculo veiculo, Long proprietarioId) {
